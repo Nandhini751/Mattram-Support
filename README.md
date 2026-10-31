@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Maatram Student Support: setup guide
 
-## Getting Started
+## 1. Create the project (in a terminal)
+    npx create-next-app@latest maatram-support
+Answer the prompts: TypeScript **No**, ESLint Yes, Tailwind **Yes**, src directory **No**, App Router **Yes**, Turbopack any, import alias **@/*** (default).
 
-First, run the development server:
+    cd maatram-support
+    npm install @supabase/supabase-js @supabase/ssr recharts
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 2. Copy these files in
+Copy everything from this folder into your project, replacing files when asked
+(app/, components/, lib/, middleware.js, vercel.json). Delete `app/page.tsx`, `app/layout.tsx`
+and `app/globals.css` if they still exist as .tsx versions, because the .js versions replace them.
+Rename `.env.local.example` to `.env.local`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 3. Supabase
+1. Create a project at supabase.com.
+2. Authentication > Sign In / Providers > Email: turn OFF "Confirm email" (demo only).
+3. SQL Editor: paste and run `supabase/schema.sql`.
+4. Project Settings > API: copy the Project URL, anon key and service_role key into `.env.local`.
+   The service_role key is secret. Never share it or put it on GitHub.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 4. Run
+    npm run dev
+Open http://localhost:3000, click "Need a demo account? Sign up", and create:
+2 coordinators, 1 admin, 1 student representative. Then run `supabase/seed.sql` in the SQL Editor for dummy data.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 5. Test reminders
+Open: http://localhost:3000/api/cron/reminders?secret=YOUR_CRON_SECRET
+With no RESEND_API_KEY the emails are printed in the terminal where `npm run dev` runs.
+Emails are logged so the same reminder is not sent twice.
 
-## Learn More
+## Notes
+- Vercel's free plan only runs cron once a day, hence the daily schedule in vercel.json.
+- Resend's test sender (onboarding@resend.dev) only delivers to your own email address.
+- Sign-up lets people pick their role. That is for the demo only. In real use, admins would assign roles.
+- Dummy data only. Never load real student details.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Theme
+Colours live in `app/globals.css` (three hex values). Save the Maatram logo as `public/logo.png`
+(right-click the logo on maatramfoundation.com > Save image as).
